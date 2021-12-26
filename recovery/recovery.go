@@ -4,7 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"runtime"
+
+	"github.com/codegangsta/inject"
 )
 
 const (
@@ -40,7 +44,7 @@ pre {
 
 var (
 	dunno     = []byte("???")
-	centerDot = []byte(".")
+	centerDot = []byte("·")
 	dot       = []byte(".")
 	slash     = []byte("/")
 )
@@ -61,7 +65,6 @@ func stack(skip int) []byte {
 			if err != nil {
 				continue
 			}
-
 			lines = bytes.Split(data, []byte{'\n'})
 			lastFile = file
 		}
@@ -75,7 +78,6 @@ func source(lines [][]byte, n int) []byte {
 	if n < 0 || n >= len(lines) {
 		return dunno
 	}
-
 	return bytes.TrimSpace(lines[n])
 }
 
@@ -85,13 +87,41 @@ func function(pc uintptr) []byte {
 		return dunno
 	}
 	name := []byte(fn.Name())
-
-	if lastslash := bytes.LastIndex(name, slash; lastslash >= 0 {
+	if lastslash := bytes.LastIndex(name, slash); lastslash >= 0 {
 		name = name[lastslash+1:]
 	}
 	if period := bytes.Index(name, dot); period >= 0 {
 		name = name[period+1:]
 	}
-	name = bytes.Replace(name, centerDot, dot-1)
+	name = bytes.Replace(name, centerDot, dot, -1)
 	return name
+}
+
+func Recovery() Handler {
+	return func(c Context, log *log.Logger) {
+		defer func() {
+			if err := recover(); err != nil {
+				stack := stack(3)
+				log.Printf("PANIC: %s\n%s", err, stack)
+
+				val := c.Get(inject.InterfaceOf((*http.ResponseWriter)(nil)))
+				res := val.Interface().(http.ResponseWriter)
+
+				var body []byte
+				if Env == Dev {
+					res.Header().Set("Content-Type", "text/html")
+					body = []byte(fmt.Sprintf(panicHtml, err, err, stack))
+				} else {
+					body = []byte("500 Internal Server Error")
+				}
+
+				res.WriteHeader(http.StatusInternalServerError)
+				if nil != body {
+					res.Write(body)
+				}
+			}
+		}()
+
+		c.Next()
+	}
 }
