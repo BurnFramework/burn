@@ -22,7 +22,7 @@ func main() {
 }
 ```
 
-- for more tutorial visit the [docs]()
+- for more tutorial visit the [docs](https://github.com/BurnFramework/burn/blob/main/docs/burn.md)
 
 ## License:
 - [GPL-3.0](https://github.com/BurnFramework/burn/blob/main/LICENSE) License
