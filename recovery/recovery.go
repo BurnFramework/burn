@@ -50,7 +50,7 @@ func stack(skip int) []byte {
 	var lines [][]byte
 	var lastFile string
 	for i := skip; ; i++ {
-		pc, file, lin, ok := runtime.Caller(i)
+		pc, file, line, ok := runtime.Caller(i)
 		if !ok {
 			break
 		}
