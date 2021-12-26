@@ -11,12 +11,9 @@ type ResponseWriter interface {
 	http.ResponseWriter
 	http.Flusher
 	http.Hijacker
-
 	Status() int
+	Written() bool
 	Size() int
-
-	Writer() bool
-
 	Before(BeforeFunc)
 }
 
@@ -32,9 +29,9 @@ func NewResponseWriter(rw http.ResponseWriter) ResponseWriter {
 
 type responseWriter struct {
 	http.ResponseWriter
-	status     int
-	size       int
-	BeforeFunc []BeforeFunc
+	status      int
+	size        int
+	beforeFuncs []BeforeFunc
 }
 
 func (rw *responseWriter) WriteHeader(s int) {
@@ -82,7 +79,18 @@ func (rw *responseWriter) callBefore() {
 	}
 }
 
+func (rw *responseWriter) Flush() {
+	flusher, ok := rw.ResponseWriter.(http.Flusher)
+	if ok {
+		flusher.Flush()
+	}
+}
+
 type closeNotifyResponseWriter struct {
 	responseWriter
 	closeNotifier http.CloseNotifier
+}
+
+func (rw *closeNotifyResponseWriter) CloseNotify() <-chan bool {
+	return rw.closeNotifier.CloseNotify()
 }
