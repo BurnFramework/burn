@@ -106,7 +106,7 @@ func Static(directory string, staticOpt ...StaticOptions) Handler {
 		if !opt.SkipLogging {
 			log.Println("[Static] Serving " + file)
 		}
-		
+
 		if opt.Expires != nil {
 			res.Header().Set("Expires", opt.Expires())
 		}
