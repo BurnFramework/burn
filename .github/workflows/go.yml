@@ -18,5 +18,10 @@ jobs:
       with:
         go-version: 1.17
 
-    - name: Build
+    - name: Check version
       run: go version
+
+    - name: Run tests in env
+      run: |
+        cd env/
+        go test
