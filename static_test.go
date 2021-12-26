@@ -1,4 +1,4 @@
-package static
+package burn
 
 import (
 	"bytes"

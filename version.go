@@ -1,4 +1,4 @@
-package version
+package burn
 
 // required go version to run burn framework
 func BurnGoVersion (
