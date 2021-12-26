@@ -1,6 +1,8 @@
 package env
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_SetENV(t *testing.T) {
 	tests := []struct {
