@@ -1,5 +1,3 @@
-// +build !go1.1
-
 package burn
 
 func BurnDoesNotSupportGo1Point0() {
