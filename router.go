@@ -1,6 +1,9 @@
 package burn
 
-import "net/http"
+import (
+	"net/http"
+	"sync"
+)
 
 type Params map[string]string
 
@@ -22,8 +25,15 @@ type Router interface {
 }
 
 type router struct {
-	routes   []*route
-	notFound []*notFound
+	routes     []*route
+	notFounds  []Handler
+	groups     []group
+	routesLock sync.RWMutex
+}
+
+type group struct {
+	pattern  string
+	handlers []Handler
 }
 
 func NewRouter() {
