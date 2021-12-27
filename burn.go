@@ -18,3 +18,31 @@ func New() *Burn {
 	m.Map(defaultReturnHandler())
 	return m
 }
+
+func (m *Burn) Handlers(handlers ...Handler) {
+	m.handlers = make([]Handler, 0)
+	for _, handler := range handlers {
+		m.Use(handler)
+	}
+}
+
+type Handler interface{}
+
+type ClassicBurn struct {
+	*Burn
+	Router
+}
+
+type Context interface {
+	inject.Injector
+	Next()
+	Written() bool
+}
+
+type context struct {
+	inject.Injector
+	handlers []Handler
+	action   Handler
+	rw       ResponseWriter
+	index    int
+}
