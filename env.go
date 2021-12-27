@@ -4,9 +4,6 @@ import (
 	"os"
 )
 
-/**
- * env(development + prod + testing)
- */
 const (
 	Dev  string = "development"
 	Prod string = "production"
@@ -22,9 +19,6 @@ func setENV(e string) {
 	}
 }
 
-/**
- * set env
- */
 func init() {
 	setENV(os.Getenv("BURN_ENV"))
 	var err error

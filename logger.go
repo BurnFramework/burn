@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Logger returns a middleware handler that logs the request as it goes in and the response as it goes out.
 func Logger() Handler {
 	return func(res http.ResponseWriter, req *http.Request, c Context, log *log.Logger) {
 		start := time.Now()

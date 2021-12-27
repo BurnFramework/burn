@@ -25,7 +25,7 @@ func Test_Static(t *testing.T) {
 	m.Use(Static(currentRoot))
 	m.Action(r.Handle)
 
-	req, err := http.NewRequest("GET", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("GET", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,7 +74,7 @@ func Test_Static_Head(t *testing.T) {
 	m.Use(Static(currentRoot))
 	m.Action(r.Handle)
 
-	req, err := http.NewRequest("HEAD", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("HEAD", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,7 +95,7 @@ func Test_Static_As_Post(t *testing.T) {
 	m.Use(Static(currentRoot))
 	m.Action(r.Handle)
 
-	req, err := http.NewRequest("POST", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("POST", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -109,7 +109,7 @@ func Test_Static_BadDir(t *testing.T) {
 
 	m := Classic()
 
-	req, err := http.NewRequest("GET", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("GET", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -129,14 +129,14 @@ func Test_Static_Options_Logging(t *testing.T) {
 	opt := StaticOptions{}
 	m.Use(Static(currentRoot, opt))
 
-	req, err := http.NewRequest("GET", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("GET", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
 
 	m.ServeHTTP(response, req)
 	expect(t, response.Code, http.StatusOK)
-	expect(t, buffer.String(), "[burn] [Static] Serving /test.go\n")
+	expect(t, buffer.String(), "[burn] [Static] Serving /burn.go\n")
 
 	// Now without logging
 	m.Handlers()
@@ -159,7 +159,7 @@ func Test_Static_Options_ServeIndex(t *testing.T) {
 	m.Map(m.logger)
 	m.Map(defaultReturnHandler())
 
-	opt := StaticOptions{IndexFile: "test.go"} 
+	opt := StaticOptions{IndexFile: "burn.go"} // Define burn.go as index file
 	m.Use(Static(currentRoot, opt))
 
 	req, err := http.NewRequest("GET", "http://localhost:3000/", nil)
@@ -169,7 +169,7 @@ func Test_Static_Options_ServeIndex(t *testing.T) {
 
 	m.ServeHTTP(response, req)
 	expect(t, response.Code, http.StatusOK)
-	expect(t, buffer.String(), "[Burn] [Static] Serving /test.go\n")
+	expect(t, buffer.String(), "[burn] [Static] Serving /burn.go\n")
 }
 
 func Test_Static_Options_Prefix(t *testing.T) {
@@ -184,14 +184,14 @@ func Test_Static_Options_Prefix(t *testing.T) {
 	m.Use(Static(currentRoot, StaticOptions{Prefix: "/public"}))
 
 	// Check file content behaviour
-	req, err := http.NewRequest("GET", "http://localhost:3000/public/test.go", nil)
+	req, err := http.NewRequest("GET", "http://localhost:3000/public/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
 
 	m.ServeHTTP(response, req)
 	expect(t, response.Code, http.StatusOK)
-	expect(t, buffer.String(), "[burn] [Static] Serving /test.go\n")
+	expect(t, buffer.String(), "[burn] [Static] Serving /burn.go\n")
 }
 
 func Test_Static_Options_Expires(t *testing.T) {
@@ -206,7 +206,7 @@ func Test_Static_Options_Expires(t *testing.T) {
 	m.Use(Static(currentRoot, StaticOptions{Expires: func() string { return "46" }}))
 
 	// Check file content behaviour
-	req, err := http.NewRequest("GET", "http://localhost:3000/test.go", nil)
+	req, err := http.NewRequest("GET", "http://localhost:3000/burn.go", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -224,7 +224,7 @@ func Test_Static_Options_Fallback(t *testing.T) {
 	m.Map(defaultReturnHandler())
 
 	// Serve current directory under /public
-	m.Use(Static(currentRoot, StaticOptions{Fallback: "/test.go"}))
+	m.Use(Static(currentRoot, StaticOptions{Fallback: "/burn.go"}))
 
 	// Check file content behaviour
 	req, err := http.NewRequest("GET", "http://localhost:3000/initram.go", nil)
@@ -234,7 +234,7 @@ func Test_Static_Options_Fallback(t *testing.T) {
 
 	m.ServeHTTP(response, req)
 	expect(t, response.Code, http.StatusOK)
-	expect(t, buffer.String(), "[burn] [Static] Serving /test.go\n")
+	expect(t, buffer.String(), "[burn] [Static] Serving /burn.go\n")
 }
 
 func Test_Static_Redirect(t *testing.T) {

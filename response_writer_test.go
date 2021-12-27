@@ -153,6 +153,7 @@ func Test_ResponseWriter_Flusher(t *testing.T) {
 
 func Test_ResponseWriter_FlusherHandler(t *testing.T) {
 
+	// New burn instance
 	m := Classic()
 
 	m.Get("/events", func(w http.ResponseWriter, r *http.Request) {
